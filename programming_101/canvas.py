@@ -16,8 +16,19 @@ class Canvas:
             </script>
         '''))
 
+    def _eval_this(self, js):
+        return output.eval_js(f'canvas_{ self.id.hex }.{ js }')
+
     def _eval_context2d(self, js):
         return output.eval_js(f'canvas_ctx2d_{ self.id.hex }.{ js }')
+
+    @property
+    def width(self):
+        return self._eval_this('width')
+
+    @property
+    def height(self):
+        return self._eval_this('height')
 
     @property
     def line_width(self):
@@ -63,3 +74,9 @@ class Canvas:
 
     def stroke(self):
         self._eval_context2d('stroke()')
+
+    def fill(self, fill_rule=None):
+        if fill_rule:
+            self._eval_context2d(f'fill({ json.dumps(fill_rule) })')
+        else:
+            self._eval_context2d('fill()')
